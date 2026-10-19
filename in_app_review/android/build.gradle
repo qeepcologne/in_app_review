@@ -1,28 +1,10 @@
 group = "dev.britannio.in_app_review"
 version = "1.0-SNAPSHOT"
 
-buildscript {
-    ext.kotlin_version = "2.1.0"
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("com.android.tools.build:gradle:8.7.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
+//AGP 9 only, so no `kotlin-android` plugin and no compat guard: with AGP's built-in Kotlin (the default) AGP compiles
+//the Kotlin sources, and a host that opts out with `android.builtInKotlin=false` gets the plugin applied by Flutter
+//itself (`FlutterPluginUtils.detectApplyingKotlinGradlePlugin`, since 3.44 — hence the Flutter floor in pubspec.yaml).
 apply plugin: "com.android.library"
-apply plugin: "kotlin-android"
 
 android {
     namespace = "dev.britannio.in_app_review"
@@ -34,12 +16,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-
     sourceSets {
-        main.java.srcDirs += "src/main/kotlin"
         test.java.srcDirs += "src/test/kotlin"
     }
 
@@ -67,5 +44,13 @@ android {
                showStandardStreams = true
             }
         }
+    }
+}
+
+//jvmTarget has to match `compileOptions` above: under built-in Kotlin AGP fails the build when the two differ, and
+//Kotlin otherwise follows the JDK toolchain (https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors)
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }

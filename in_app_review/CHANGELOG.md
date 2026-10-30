@@ -1,3 +1,9 @@
+# Unreleased
+
+- Android: require AGP 9. Kotlin is compiled by AGP's built-in Kotlin support, so the `buildscript` block, the `allprojects` repositories and the `kotlin-android` plugin are removed; `kotlinOptions` is replaced by `kotlin { compilerOptions { jvmTarget = JVM_11 } }`.
+- Raise the minimum Flutter version to 3.44.0.
+- The example app is unchanged (still AGP 8.7.3).
+
 # [2.0.12]
 
 - Fix an Android NullPointerException that sometimes occurred when apps were backgrounded.
